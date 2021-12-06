@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Emergencias</string>
+    <string name="app_name">Emergências</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_call">Chamar</string>
+    <string name="title_contacts">Contatos</string>
+    <string name="title_user">Perfil</string>
 </resources>

@@ -30,11 +30,11 @@ public class LoginFragment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_login);
 
-        edit_name = findViewById(R.id.username);
-        edit_pass = findViewById(R.id.password);
-        bt_login = findViewById(R.id.login);
-        bt_register = findViewById(R.id.register);
-        check_stay_connected = findViewById(R.id.stay_connected);
+        edit_name = (EditText) findViewById(R.id.username);
+        edit_pass = (EditText) findViewById(R.id.password);
+        bt_login = (Button) findViewById(R.id.login);
+        bt_register = (Button) findViewById(R.id.register);
+        check_stay_connected = (CheckBox) findViewById(R.id.stay_connected);
 
         if (userIsLogged()) {
             User user = recoverUser();
@@ -50,24 +50,28 @@ public class LoginFragment extends AppCompatActivity {
                 public void onClick(View v) {
                     String name = edit_name.getText().toString();
                     String password = edit_pass.getText().toString();
-
-                    SharedPreferences saved_user = getSharedPreferences("default_user", Activity.MODE_PRIVATE);
-                    String saved_name = saved_user.getString("name", "");
-                    String saved_password = saved_user.getString("password", "");
-
-                    if ((saved_name != null) && (saved_password != null)) {
-                        if (saved_name.equals(name) && saved_password.equals(password)) {
-                            User user = recoverUser();
-
-                            // TODO fillContactList(user);
-
-                            goToNextPage(user);
-                        } else {
-                            Toast.makeText(LoginFragment.this, "Login e Senha Incorretos!", Toast.LENGTH_LONG).show();
-                        }
+                    if (name.equals("") || password.equals("")) {
+                        Toast.makeText(LoginFragment.this, "Todos os campos devem ser preenchidos!", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        Toast.makeText(LoginFragment.this, "Login e Senha nulos!", Toast.LENGTH_LONG).show();
+                        SharedPreferences saved_user = getSharedPreferences("default_user", Activity.MODE_PRIVATE);
+                        String saved_name = saved_user.getString("name", "");
+                        String saved_password = saved_user.getString("password", "");
+
+                        if ((saved_name != null) && (saved_password != null)) {
+                            if (saved_name.equals(name) && saved_password.equals(password)) {
+                                User user = recoverUser();
+
+                                // TODO fillContactList(user);
+
+                                goToNextPage(user);
+                            } else {
+                                Toast.makeText(LoginFragment.this, "Login e Senha Incorretos!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(LoginFragment.this, "Usuário não registrado!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             });

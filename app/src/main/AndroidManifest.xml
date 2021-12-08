@@ -13,6 +13,16 @@
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main" />
+
+        <activity
+            android:name=".ui.login.LoginFragment"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

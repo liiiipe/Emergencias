@@ -4,4 +4,11 @@
     <string name="title_call">Chamar</string>
     <string name="title_contacts">Contatos</string>
     <string name="title_user">Perfil</string>
+    <!-- Strings related to login -->
+    <string name="prompt_username">Nome</string>
+    <string name="prompt_password">Senha</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_register">Registrar</string>
+    <string name="action_sign_in_short">Logar</string>
+    <string name="stay_connected">Manter-se conectado!</string>
 </resources>

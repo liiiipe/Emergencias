@@ -13,4 +13,11 @@
     <string name="stay_connected">Manter-se conectado!</string>
     <!-- Strings related to call -->
     <string name="call">Ligar</string>
+    <!-- Strings related to profile user -->
+    <string name="update_profile">Atualizar perfil</string>
+    <string name="save">Salvar</string>
+    <string name="name_user">TextView</string>
+    <string name="error_empty_fields">Todos os campos devem ser preenchidos!</string>
+    <string name="update_success">Usuário atualizado com sucesso!</string>
+    <string name="update_error">Erro ao atualizar usuário!</string>
 </resources>

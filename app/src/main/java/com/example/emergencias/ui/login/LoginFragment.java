@@ -51,7 +51,7 @@ public class LoginFragment extends AppCompatActivity {
                     String name = edit_name.getText().toString();
                     String password = edit_pass.getText().toString();
                     if (name.equals("") || password.equals("")) {
-                        Toast.makeText(LoginFragment.this, "Todos os campos devem ser preenchidos!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginFragment.this, R.string.error_empty_fields, Toast.LENGTH_LONG).show();
                     }
                     else {
                         SharedPreferences saved_user = getSharedPreferences("default_user", Activity.MODE_PRIVATE);
@@ -84,18 +84,16 @@ public class LoginFragment extends AppCompatActivity {
                     String password = edit_pass.getText().toString();
                     boolean stay_connected = check_stay_connected.isChecked();
 
-                    SharedPreferences new_user = getSharedPreferences("default_user", Activity.MODE_PRIVATE);
-                    SharedPreferences.Editor edit_new_user = new_user.edit();
+                    boolean success = saveUser(name, password, stay_connected);
+                    if (success) {
+                        Toast.makeText(LoginFragment.this, "Registro bem sucedido!", Toast.LENGTH_LONG).show();
 
-                    edit_new_user.putString("name", name);
-                    edit_new_user.putString("password", password);
-                    edit_new_user.putBoolean("stay_connected", stay_connected);
-
-                    edit_new_user.commit();
-
-                    User user = new User(name, password, stay_connected);
-
-                    goToNextPage(user);
+                        User user = new User(name, password, stay_connected);
+                        goToNextPage(user);
+                    }
+                    else {
+                        Toast.makeText(LoginFragment.this, "Erro ao registrar!", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
@@ -115,11 +113,22 @@ public class LoginFragment extends AppCompatActivity {
     }
 
     private User recoverUser() {
-        SharedPreferences user_logged= getSharedPreferences("default_user", Activity.MODE_PRIVATE);
+        SharedPreferences user_logged = getSharedPreferences("default_user", Activity.MODE_PRIVATE);
         String name = user_logged.getString("name","");
         String password = user_logged.getString("password","");
         boolean stay_connected = user_logged.getBoolean("stay_connected",false);
 
         return new User(name, password, stay_connected);
+    }
+
+    private boolean saveUser(String name, String password, boolean stay_connected) {
+        SharedPreferences new_user = getSharedPreferences("default_user", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor edit_new_user = new_user.edit();
+
+        edit_new_user.putString("name", name);
+        edit_new_user.putString("password", password);
+        edit_new_user.putBoolean("stay_connected", stay_connected);
+
+        return edit_new_user.commit();
     }
 }

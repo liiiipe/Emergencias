@@ -9,13 +9,13 @@
         android:id="@+id/navigation_call"
         android:name="com.example.emergencias.ui.call.CallFragment"
         android:label="@string/title_call"
-        tools:layout="@layout/fragment_contacts" />
+        tools:layout="@layout/fragment_call" />
 
     <fragment
         android:id="@+id/navigation_contacts"
         android:name="com.example.emergencias.ui.contacts.ContactsFragment"
         android:label="@string/title_contacts"
-        tools:layout="@layout/fragment_call" />
+        tools:layout="@layout/fragment_contacts" />
 
     <fragment
         android:id="@+id/navigation_user"

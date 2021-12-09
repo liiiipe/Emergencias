@@ -11,4 +11,6 @@
     <string name="action_register">Registrar</string>
     <string name="action_sign_in_short">Logar</string>
     <string name="stay_connected">Manter-se conectado!</string>
+    <!-- Strings related to call -->
+    <string name="call">Ligar</string>
 </resources>

@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.emergencias.R;
 import com.example.emergencias.model.Contact;
@@ -64,7 +66,12 @@ public class ContactsFragment extends Fragment {
         searchContact = requireActivity().findViewById(R.id.contactSearching);
         listview = requireActivity().findViewById(R.id.listContacts);
 
-        searchBtn.setOnClickListener(onClickSearch());
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickSearch();
+            }
+        });
     }
 
     // Função para salvar um novo contato
@@ -92,12 +99,12 @@ public class ContactsFragment extends Fragment {
 
 
     // Função chamada no momento da busca
-    public View.OnClickListener onClickSearch(){
+    public void onClickSearch(){
         // Verificando permissão de acessos aos contatos
         if(ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED){
             // Pedindo permissão
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 3333);
-            return null;
+            return;
         }
 
         // Permissão já está garantida, buscando lista de contatos
@@ -124,9 +131,11 @@ public class ContactsFragment extends Fragment {
                 telefonesContatos[i] = number;
             }
             i++;
+            phones.close();
         }
+        cursor.close();
 
-        if (nomesContatos !=null) {
+        if (nomesContatos.length!=0) {
             // Percorrendo lista de resultado e criando função de click
             for(int j=0; j<=nomesContatos.length; j++) {
                 ArrayAdapter<String> adaptador;
@@ -146,8 +155,9 @@ public class ContactsFragment extends Fragment {
                     }
                 });
             }
+        } else {
+            Toast.makeText(requireActivity(), "Nenhum contato encontrado", Toast.LENGTH_SHORT).show();
         }
-        return null;
     }
 
 }

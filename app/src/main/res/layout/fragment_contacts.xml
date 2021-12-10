@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:backgroundTint="@color/purple_500"
-        android:enabled="false"
         android:shadowColor="@color/purple_500"
         android:text="Buscar"
         android:textColor="@color/white"

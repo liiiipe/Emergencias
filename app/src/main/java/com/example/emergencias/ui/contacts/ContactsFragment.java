@@ -139,7 +139,7 @@ public class ContactsFragment extends Fragment {
             // Percorrendo lista de resultado e criando função de click
             for(int j=0; j<=nomesContatos.length; j++) {
                 ArrayAdapter<String> adaptador;
-                adaptador = new ArrayAdapter<String>(requireActivity(), R.layout.fragment_contacts, nomesContatos);
+                adaptador = new ArrayAdapter<String>(requireActivity(), R.layout.list_item, R.id.call_item_content, nomesContatos);
                 listview.setAdapter(adaptador);
                 listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override

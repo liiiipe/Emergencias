@@ -215,15 +215,11 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
                                            @NonNull int[] grantResults) {
         if (requestCode == 2222) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(requireActivity(), "VALEU", Toast.LENGTH_LONG).show();
                 Uri uri = Uri.parse(numeroCall);
-                //   Intent itLigar = new Intent(Intent.ACTION_DIAL, uri);
                 Intent itLigar = new Intent(Intent.ACTION_CALL, uri);
                 startActivity(itLigar);
 
             } else {
-                Toast.makeText(requireActivity(), "SEU FELA!", Toast.LENGTH_LONG).show();
-
                 String mensagem = "Seu aplicativo pode ligar diretamente, mas sem permissão não funciona. Se você marcou não perguntar mais, você deve ir na tela de configurações para mudar a instalação ou reinstalar o aplicativo  ";
                 String titulo = "Porque precisamos telefonar?";
                 CallPermission mensagemPermisso = new CallPermission(mensagem, titulo, 2);
@@ -256,10 +252,8 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
     private User atualizarUser() {
         User user;
         SharedPreferences temUser= requireActivity().getSharedPreferences("usuarioPadrao", Activity.MODE_PRIVATE);
-        String loginSalvo = temUser.getString("login","");
         String senhaSalva = temUser.getString("senha","");
         String nomeSalvo = temUser.getString("nome","");
-        String emailSalvo = temUser.getString("email","");
         boolean manterLogado=temUser.getBoolean("manterLogado",false);
 
         user=new User(nomeSalvo,senhaSalva,manterLogado);

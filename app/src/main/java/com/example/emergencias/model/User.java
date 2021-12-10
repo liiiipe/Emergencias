@@ -13,6 +13,7 @@ public class User implements Serializable {
         this.name = name;
         this.password = password;
         this.stay_connected = stay_connected;
+        this.contatos = new ArrayList<Contact>();
     }
 
     public String getName() {

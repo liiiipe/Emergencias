@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,38 +42,34 @@ public class ContactsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_contacts, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // TODO: inserir código equivalente ao onCreate aqui
-        // se algum método como this.metodo(...) ou metodo(...) falhar,
-        // tente substituir por getActivity().metodo(...), pois o método é da Atividade toda, não do fragmento
-
         // Recuperando tela anterior
-        Intent quemChamou= getActivity().getIntent();
+        Intent quemChamou= requireActivity().getIntent();
         if (quemChamou!=null) {
             Bundle params = quemChamou.getExtras();
             if (params!=null) {
                 //Recuperando o Usuario
                 user = (User) params.getSerializable("usuario");
-                getActivity().setTitle("Alterar Contatos de Emergência");
+                requireActivity().setTitle("Alterar Contatos de Emergência");
             }
         }
 
-        searchBtn = getActivity().findViewById(R.id.searchContactBtn);
-        searchContact = getActivity().findViewById(R.id.contactSearching);
-        listview = getActivity().findViewById(R.id.listContacts);
+        searchBtn = requireActivity().findViewById(R.id.searchContactBtn);
+        searchContact = requireActivity().findViewById(R.id.contactSearching);
+        listview = requireActivity().findViewById(R.id.listContacts);
 
         searchBtn.setOnClickListener(onClickSearch());
     }
 
     // Função para salvar um novo contato
     public void salvarContato (Contact newContact){
-        SharedPreferences salvaContatos = getActivity().getSharedPreferences("contatos", Activity.MODE_PRIVATE);
+        SharedPreferences salvaContatos = requireActivity().getSharedPreferences("contatos", Activity.MODE_PRIVATE);
 
         int num = salvaContatos.getInt("numContatos", 0); //checando quantos contatos já tem
         SharedPreferences.Editor editor = salvaContatos.edit();
@@ -99,14 +94,14 @@ public class ContactsFragment extends Fragment {
     // Função chamada no momento da busca
     public View.OnClickListener onClickSearch(){
         // Verificando permissão de acessos aos contatos
-        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED){
+        if(ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED){
             // Pedindo permissão
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 3333);
             return null;
         }
 
         // Permissão já está garantida, buscando lista de contatos
-        ContentResolver cr = getActivity().getContentResolver();
+        ContentResolver cr = requireActivity().getContentResolver();
         String consulta = ContactsContract.Contacts.DISPLAY_NAME + " LIKE ?";
         String [] argumentosConsulta = {"%"+searchContact.getText()+"%"};
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, consulta,argumentosConsulta, null);
@@ -135,7 +130,7 @@ public class ContactsFragment extends Fragment {
             // Percorrendo lista de resultado e criando função de click
             for(int j=0; j<=nomesContatos.length; j++) {
                 ArrayAdapter<String> adaptador;
-                adaptador = new ArrayAdapter<String>(getActivity(), R.layout.fragment_contacts, nomesContatos);
+                adaptador = new ArrayAdapter<String>(requireActivity(), R.layout.fragment_contacts, nomesContatos);
                 listview.setAdapter(adaptador);
                 listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -144,10 +139,10 @@ public class ContactsFragment extends Fragment {
                         c.setName(nomesContatos[i]);
                         c.setNumber("tel:+"+telefonesContatos[i]);
                         salvarContato(c);
-                        Intent intent = new Intent(getActivity().getApplicationContext(), CallFragment.class);
-                        intent.putExtra("usuario", (Parcelable) user);
+                        Intent intent = new Intent(requireActivity().getApplicationContext(), CallFragment.class);
+                        intent.putExtra("usuario",user);
                         startActivity(intent);
-                        getActivity().finish();
+                        requireActivity().finish();
                     }
                 });
             }

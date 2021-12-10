@@ -1,9 +1,12 @@
 package com.example.emergencias.model;
 
+import java.util.ArrayList;
+
 public class User {
     String name;
     String password;
     boolean stay_connected = false;
+    ArrayList<Contact> contatos;
 
     public User(String name, String password, boolean stay_connected) {
         this.name = name;
@@ -33,5 +36,13 @@ public class User {
 
     public void setStay_connected(boolean stay_connected) {
         this.stay_connected = stay_connected;
+    }
+
+    public ArrayList<Contact> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(ArrayList<Contact> contatos) {
+        this.contatos = contatos;
     }
 }

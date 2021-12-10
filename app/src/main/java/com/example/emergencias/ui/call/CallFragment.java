@@ -24,6 +24,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.example.emergencias.R;
+import com.example.emergencias.model.Contact;
 import com.example.emergencias.model.User;
 
 import java.io.ByteArrayInputStream;
@@ -34,7 +35,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: criar modelo Contatos e layouts (R.layout e R.id's) para listagem
 public class CallFragment extends Fragment implements CallPermission.NoticeDialogListener {
 
     ListView lv;
@@ -51,31 +51,34 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        lv = getView().findViewById(R.id.callList);
+        if (getView()!=null) {
+            lv = getView().findViewById(R.id.callList);
 
-        //Dados da Intent Anterior
-        Intent quemChamou = getActivity().getIntent();
-        if (quemChamou != null) {
-            Bundle params = quemChamou.getExtras();
-            if (params != null) {
-                //Recuperando o Usuario
-                user = (User) params.getSerializable("usuario");
-                if (user != null) {
-                    getActivity().setTitle("Contatos de Emergência de "+user.getNome());
-                    preencherListView(user);
-                    preencherListViewImagens(user);
+            //Dados da Intent Anterior
+            Intent quemChamou = requireActivity().getIntent();
+            if (quemChamou != null) {
+                Bundle params = quemChamou.getExtras();
+                if (params != null) {
+                    //Recuperando o Usuario
+                    user = (User) params.getSerializable("usuario");
+                    if (user != null) {
+                        requireActivity().setTitle("Contatos de Emergência de " + user.getName());
+                        preencherListView(user);
+                        preencherListViewImagens(user);
+                    }
                 }
             }
         }
     }
 
+
     protected void atualizarListaDeContatos(User user){
-        SharedPreferences recuperarContatos = getActivity().getSharedPreferences("contatos", Activity.MODE_PRIVATE);
+        SharedPreferences recuperarContatos = requireActivity().getSharedPreferences("contatos", Activity.MODE_PRIVATE);
 
         int num = recuperarContatos.getInt("numContatos", 0);
-        ArrayList<Contato> contatos = new ArrayList<Contato>();
+        ArrayList<Contact> contatos = new ArrayList<Contact>();
 
-        Contato contato;
+        Contact contato;
 
         for (int i = 1; i <= num; i++) {
             String objSel = recuperarContatos.getString("contato" + i, "");
@@ -84,7 +87,7 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
                     ByteArrayInputStream bis =
                             new ByteArrayInputStream(objSel.getBytes(StandardCharsets.ISO_8859_1.name()));
                     ObjectInputStream oos = new ObjectInputStream(bis);
-                    contato = (Contato) oos.readObject();
+                    contato = (Contact) oos.readObject();
 
                     if (contato != null) {
                         contatos.add(contato);
@@ -100,19 +103,18 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
 
     protected  void preencherListViewImagens(User user){
 
-        final ArrayList<Contato> contatos = user.getContatos();
+        final ArrayList<Contact> contatos = user.getContatos();
         Collections.sort(contatos);
 
-        if (contatos != null) {
+        if (contatos.size()!=0) {
             String[] contatosNomes, contatosAbrevs;
             contatosNomes = new String[contatos.size()];
             contatosAbrevs= new String[contatos.size()];
-            Contato c;
             for (int j = 0; j < contatos.size(); j++) {
-                contatosAbrevs[j] =contatos.get(j).getNome().substring(0, 1);
-                contatosNomes[j] =contatos.get(j).getNome();
+                contatosAbrevs[j] =contatos.get(j).getName().substring(0, 1);
+                contatosNomes[j] =contatos.get(j).getName();
             }
-            ArrayList<Map<String,Object>> itemDataList = new ArrayList<Map<String,Object>>();;
+            ArrayList<Map<String,Object>> itemDataList = new ArrayList<Map<String,Object>>();
 
             for(int i =0; i < contatos.size(); i++) {
                 Map<String,Object> listItemMap = new HashMap<String,Object>();
@@ -122,7 +124,7 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
                 itemDataList.add(listItemMap);
             }
             SimpleAdapter simpleAdapter = new SimpleAdapter(
-                    getActivity(),itemDataList,R.layout.list_view_layout_imagem,
+                    requireActivity(),itemDataList,R.layout.list_imagem_item,
                     new String[]{"imageId","contato","abrevs"},
                     new int[]{R.id.userImage, R.id.userTitle,R.id.userAbrev});
             lv.setAdapter(simpleAdapter);
@@ -130,13 +132,7 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (checarPermissaoPhone_SMD(contatos.get(i).getNumero())) {
-
-                        Uri uri = Uri.parse(contatos.get(i).getNumero());
-                        //  Intent itLigar = new Intent(Intent.ACTION_DIAL, uri);
-                        Intent itLigar = new Intent(Intent.ACTION_CALL, uri);
-                        startActivity(itLigar);
-                    }
+                    chamar(contatos.get(i));
                 }
             });
         }
@@ -144,46 +140,46 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
 
     protected void preencherListView(User user) {
 
-        final ArrayList<Contato> contatos = user.getContatos();
+        final ArrayList<Contact> contatos = user.getContatos();
 
         if (contatos != null) {
             final String[] nomesSP;
             nomesSP = new String[contatos.size()];
-            Contato c;
             for (int j = 0; j < contatos.size(); j++) {
-                nomesSP[j] = contatos.get(j).getNome();
+                nomesSP[j] = contatos.get(j).getName();
             }
 
             ArrayAdapter<String> adaptador;
 
-            adaptador = new ArrayAdapter<String>(getActivity(), R.layout.list_view_layout, nomesSP);
+            adaptador = new ArrayAdapter<String>(requireActivity(), R.layout.list_item, nomesSP);
             lv.setAdapter(adaptador);
 
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                    if (checarPermissaoPhone_SMD(contatos.get(i).getNumero())) {
-
-                        Uri uri = Uri.parse(contatos.get(i).getNumero());
-                        // TODO: implementar ligar pelo aplicativo de chamadas (DIAL) caso o
-                        //      ligar direto (CALL) falhe
-                        //   Intent itLigar = new Intent(Intent.ACTION_DIAL, uri);
-                        Intent itLigar = new Intent(Intent.ACTION_CALL, uri);
-                        startActivity(itLigar);
-                    }
-
-
+                    chamar(contatos.get(i));
                 }
             });
+        }
+    }
+
+    protected void chamar(Contact contato) {
+        String number = contato.getNumber();
+        Uri uri = Uri.parse(number);
+        if (checarPermissaoPhone_SMD(number)) {
+            Intent itLigar = new Intent(Intent.ACTION_CALL, uri);
+            startActivity(itLigar);
+        } else {
+            Intent itRedirect = new Intent(Intent.ACTION_DIAL, uri);
+            startActivity(itRedirect);
         }
     }
 
     protected boolean checarPermissaoPhone_SMD(String numero){
 
         numeroCall=numero;
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CALL_PHONE)
                 == PackageManager.PERMISSION_GRANTED){
             return true;
         }
@@ -196,8 +192,8 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
                 int codigo =1;
                 CallPermission mensagemPermissao = new CallPermission(mensagem,titulo, codigo);
 
-                mensagemPermissao.onAttach ((Context)getActivity());
-                mensagemPermissao.show(getActivity().getSupportFragmentManager(), "primeiravez2");
+                mensagemPermissao.onAttach ((Context)requireActivity());
+                mensagemPermissao.show(requireActivity().getSupportFragmentManager(), "primeiravez2");
 
             }else{
                 String mensagem = "Nossa aplicação precisa acessar o telefone para discagem automática. Uma janela de permissão será solicitada";
@@ -205,8 +201,8 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
                 int codigo =1;
 
                 CallPermission mensagemPermissao = new CallPermission(mensagem,titulo, codigo);
-                mensagemPermissao.onAttach ((Context)getActivity());
-                mensagemPermissao.show(getActivity().getSupportFragmentManager(), "segundavez2");
+                mensagemPermissao.onAttach ((Context)requireActivity());
+                mensagemPermissao.show(requireActivity().getSupportFragmentManager(), "segundavez2");
 
             }
         }
@@ -215,24 +211,24 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == 2222) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getActivity(), "VALEU", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), "VALEU", Toast.LENGTH_LONG).show();
                 Uri uri = Uri.parse(numeroCall);
                 //   Intent itLigar = new Intent(Intent.ACTION_DIAL, uri);
                 Intent itLigar = new Intent(Intent.ACTION_CALL, uri);
                 startActivity(itLigar);
 
             } else {
-                Toast.makeText(getActivity(), "SEU FELA!", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), "SEU FELA!", Toast.LENGTH_LONG).show();
 
                 String mensagem = "Seu aplicativo pode ligar diretamente, mas sem permissão não funciona. Se você marcou não perguntar mais, você deve ir na tela de configurações para mudar a instalação ou reinstalar o aplicativo  ";
                 String titulo = "Porque precisamos telefonar?";
                 CallPermission mensagemPermisso = new CallPermission(mensagem, titulo, 2);
-                mensagemPermisso.onAttach((Context) getActivity());
-                mensagemPermisso.show(getActivity().getSupportFragmentManager(), "segundavez");
+                mensagemPermisso.onAttach((Context) requireActivity());
+                mensagemPermisso.show(requireActivity().getSupportFragmentManager(), "segundavez");
             }
         }
     }
@@ -243,7 +239,7 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
 
         if (requestCode == 1111) {//Retorno de Mudar Perfil
             user=atualizarUser();
-            getActivity().setTitle("Contatos de Emergência de "+user.getNome());
+            requireActivity().setTitle("Contatos de Emergência de "+user.getName());
             atualizarListaDeContatos(user);
             preencherListViewImagens(user);
             preencherListView(user); //Montagem do ListView
@@ -255,13 +251,11 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
             preencherListView(user); //Montagem do ListView
         }
 
-
-
     }
 
     private User atualizarUser() {
-        User user = null;
-        SharedPreferences temUser= getActivity().getSharedPreferences("usuarioPadrao", Activity.MODE_PRIVATE);
+        User user;
+        SharedPreferences temUser= requireActivity().getSharedPreferences("usuarioPadrao", Activity.MODE_PRIVATE);
         String loginSalvo = temUser.getString("login","");
         String senhaSalva = temUser.getString("senha","");
         String nomeSalvo = temUser.getString("nome","");
@@ -279,8 +273,6 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
             requestPermissions(permissions, 2222);
 
         }
-
     }
-
 
 }

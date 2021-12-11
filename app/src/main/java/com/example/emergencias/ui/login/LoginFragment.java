@@ -15,7 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.emergencias.MainActivity;
 import com.example.emergencias.R;
+import com.example.emergencias.model.Contact;
 import com.example.emergencias.model.User;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class LoginFragment extends AppCompatActivity {
     EditText edit_name;
@@ -37,9 +45,7 @@ public class LoginFragment extends AppCompatActivity {
 
         if (userIsLogged()) {
             User user = recoverUser();
-
-            // TODO fillContactList(user);
-
+            fillContactList(user);
             goToNextPage(user);
         }
         else {
@@ -60,9 +66,7 @@ public class LoginFragment extends AppCompatActivity {
                         if ((saved_name != null) && (saved_password != null)) {
                             if (saved_name.equals(name) && saved_password.equals(password)) {
                                 User user = recoverUser();
-
-                                // TODO fillContactList(user);
-
+                                fillContactList(user);
                                 goToNextPage(user);
                             } else {
                                 Toast.makeText(LoginFragment.this, "Login e Senha Incorretos!", Toast.LENGTH_LONG).show();
@@ -100,7 +104,7 @@ public class LoginFragment extends AppCompatActivity {
 
     protected void goToNextPage(User user) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("user",user);
+        intent.putExtra("usuario",user);
         startActivity(intent);
 
         finish();
@@ -118,6 +122,42 @@ public class LoginFragment extends AppCompatActivity {
         boolean stay_connected = user_logged.getBoolean("stay_connected",false);
 
         return new User(name, password, stay_connected);
+    }
+
+    private void fillContactList(User user) {
+        SharedPreferences user_contacts = getSharedPreferences("contatos", Activity.MODE_PRIVATE);
+        int num = user_contacts.getInt("numContatos", 0);
+
+        ArrayList<Contact> contatosRecuperados = new ArrayList<Contact>();
+        ByteArrayOutputStream dt;
+        ByteArrayInputStream it;
+        ObjectInputStream ois;
+
+        String contatoSerializado = ""; int j;
+        for (int i=0; i<num; i++) {
+            j = i+1;
+            contatoSerializado = user_contacts.getString("contato"+j, "");
+            if (!contatoSerializado.equals("")) {
+                try {
+                    Contact c;
+                    dt = new ByteArrayOutputStream();
+                    dt.write(contatoSerializado.getBytes(StandardCharsets.ISO_8859_1));
+                    it = new ByteArrayInputStream(dt.toByteArray());
+                    ois = new ObjectInputStream(it);
+                    c = (Contact) ois.readObject();
+                    contatosRecuperados.add(c);
+                    ois.close(); it.close(); dt.close();
+                } catch (Exception e) {
+                    Contact contatoFalho = new Contact();
+                    contatoFalho.setName("Contato falho");
+                    contatoFalho.setNumber("0");
+                    contatosRecuperados.add(contatoFalho);
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        user.setContatos(contatosRecuperados);
     }
 
     private boolean saveUser(String name, String password, boolean stay_connected) {

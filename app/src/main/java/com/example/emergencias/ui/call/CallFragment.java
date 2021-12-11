@@ -53,13 +53,13 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
 
         if (getView()!=null) {
             lv = getView().findViewById(R.id.callList);
-
             //Dados da Intent Anterior
             Intent quemChamou = requireActivity().getIntent();
             if (quemChamou != null) {
                 Bundle params = quemChamou.getExtras();
                 if (params != null) {
                     //Recuperando o Usuario
+                    Toast.makeText(requireActivity(), params.getString("usuario"), Toast.LENGTH_LONG);
                     user = (User) params.getSerializable("usuario");
                     if (user != null) {
                         requireActivity().setTitle("Contatos de Emergência de " + user.getName());

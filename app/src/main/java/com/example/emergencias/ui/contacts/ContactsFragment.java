@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.emergencias.MainActivity;
 import com.example.emergencias.R;
 import com.example.emergencias.model.Contact;
 import com.example.emergencias.model.User;
@@ -150,7 +151,7 @@ public class ContactsFragment extends Fragment {
                         c.setName(nomesContatos[i]);
                         c.setNumber("tel:+"+telefonesContatos[i]);
                         salvarContato(c);
-                        Intent intent = new Intent(requireActivity().getApplicationContext(), CallFragment.class);
+                        Intent intent = new Intent(requireActivity().getApplicationContext(), MainActivity.class);
                         intent.putExtra("usuario",user);
                         startActivity(intent);
                         requireActivity().finish();

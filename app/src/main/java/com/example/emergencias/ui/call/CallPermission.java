@@ -53,8 +53,7 @@ public class CallPermission extends DialogFragment {
             listener = (NoticeDialogListener) context;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(getActivity().toString()
-                    + " must implement NoticeDialogListener");
+            throw new ClassCastException("App must implement NoticeDialogListener");
         }
     }
 }

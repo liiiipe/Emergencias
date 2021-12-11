@@ -1,7 +1,9 @@
 package com.example.emergencias;
 
+import android.Manifest;
 import android.os.Bundle;
 
+import com.example.emergencias.ui.call.CallPermission;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +15,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.emergencias.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CallPermission.NoticeDialogListener {
 
     private ActivityMainBinding binding;
 
@@ -36,4 +38,12 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    @Override
+    public void onDialogPositiveClick(int codigo) {
+        if (codigo==1){
+            String[] permissions ={Manifest.permission.CALL_PHONE};
+            requestPermissions(permissions, 2222);
+
+        }
+    }
 }

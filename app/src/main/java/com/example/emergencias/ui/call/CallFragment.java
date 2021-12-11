@@ -135,6 +135,17 @@ public class CallFragment extends Fragment implements CallPermission.NoticeDialo
                     chamar(contatos.get(i));
                 }
             });
+
+            // Função de remover com click longo na lista de contatos
+            lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int i, long id) {
+                    // Atualizando lista de contatos
+                    contatos.remove(i);
+                    user.setContatos(contatos);
+                    return false;
+                }
+            });
         }
     }
 

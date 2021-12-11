@@ -42,9 +42,6 @@ public class ContactsFragment extends Fragment {
     ListView listview;
     User user;
 
-    Button removeContactBtn;
-    Button cancelRemoveBtn;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -70,24 +67,12 @@ public class ContactsFragment extends Fragment {
         searchContact = requireActivity().findViewById(R.id.contactSearching);
         listview = requireActivity().findViewById(R.id.listContacts);
 
-        removeContactBtn = requireActivity().findViewById(R.id.removeContactBtn);
-        cancelRemoveBtn = requireActivity().findViewById(R.id.cancelRemoveContactBtn);
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClickSearch();
             }
-        });
-
-        removeContactBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { onClickRemoveContact(); }
-        });
-
-        cancelRemoveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { onClickCancelRemove(); }
         });
     }
 
@@ -176,52 +161,4 @@ public class ContactsFragment extends Fragment {
             Toast.makeText(requireActivity(), "Nenhum contato encontrado", Toast.LENGTH_SHORT).show();
         }
     }
-
-    public void onClickRemoveContact(){
-        // Trocando visibilidade dos botões
-        cancelRemoveBtn.setVisibility(View.VISIBLE);
-        removeContactBtn.setVisibility(View.INVISIBLE);
-        searchContact.setVisibility(View.INVISIBLE);
-        searchBtn.setVisibility(View.INVISIBLE);
-
-        // Preenchendo list view com lista dos contatos do usuário
-        final ArrayList<Contact> contatos = user.getContatos();
-
-        if (contatos != null) {
-            final String[] nomesSP;
-            nomesSP = new String[contatos.size()];
-            for (int j = 0; j < contatos.size(); j++) {
-                nomesSP[j] = "remover:" + contatos.get(j).getName();
-            }
-
-            ArrayAdapter<String> adaptador;
-
-            adaptador = new ArrayAdapter<String>(requireActivity(), R.layout.list_item, nomesSP);
-            listview.setAdapter(adaptador);
-
-            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    // Atualizando lista de contatos
-                    contatos.remove(i);
-                    user.setContatos(contatos);
-                }
-            });
-        }
-
-        return;
-    }
-
-    public void onClickCancelRemove(){
-        // Trocando visibilidade dos botões
-        cancelRemoveBtn.setVisibility(View.INVISIBLE);
-        removeContactBtn.setVisibility(View.VISIBLE);
-        searchContact.setVisibility(View.VISIBLE);
-        searchBtn.setVisibility(View.VISIBLE);
-
-        // Voltando listview para vazio
-        listview.setAdapter(null);
-        return;
-    }
-
 }

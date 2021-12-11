@@ -25,5 +25,5 @@ A seguir estão várias capturas de tela do aplicativo
 
 ### Alterando perfil do usuário
 
-![User printscreen](https://lh3.googleusercontent.com/pw/AM-JKLU6liGp7sBvB8LYZ2DpD3NHcQ-zuYKguQ0q-GaUk4rB4wTxva_Fmnd7qt1wyHoGkkPk1CwlZxNxwrlTVD2QQN5DM9eTqkq4pIMi3itXC7tACb0ZuaaM6etiSQNKx_2nwOgU0XcJW7N0YjX4je9NoG2a=w440-h903-noB)
+![User printscreen](https://lh3.googleusercontent.com/pw/AM-JKLU6liGp7sBvB8LYZ2DpD3NHcQ-zuYKguQ0q-GaUk4rB4wTxva_Fmnd7qt1wyHoGkkPk1CwlZxNxwrlTVD2QQN5DM9eTqkq4pIMi3itXC7tACb0ZuaaM6etiSQNKx_2nwOgU0XcJW7N0YjX4je9NoG2a=w440-h903-no)
 
